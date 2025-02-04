@@ -96,7 +96,7 @@ def setPlayers(joc):
     joc.createDeck()
     joc.reparteix()
 
-def drawBoard(game, player, playedCards):
+def drawBoard(game, player, playedCards, final = False):
     clear()
     print(f"""
 ╔══════════════════════════════════════════╗
@@ -108,7 +108,7 @@ def drawBoard(game, player, playedCards):
 {chr(10).join(f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║" for i, carta in enumerate(playedCards))}
 ║                                  ║       ║
 ╠══════════════════════════════════╩═══════╣
-║ Torn de {calcSpaces(player.name, 33)}║
+║ Torn {calcSpaces('Final' if final else player.name, 36)}║
 ╠══════════════════════════════════╦═══════╣
 ║                                  ║       ║
 {chr(10).join(f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║" for i, carta in enumerate(player.cartes))}
@@ -116,10 +116,12 @@ def drawBoard(game, player, playedCards):
 ╚══════════════════════════════════╩═══════╝
 """)
     
-    playedCard = playCard(player)
-    player.cartes.remove(playedCard)
-    player.cartes.append(game.deck.pop(0)) 
-    return playedCard
+    if final:
+        print("Final de la ronda")
+        pressToContinue()
+    else:
+        playedCard = playCard(player)
+        return playedCard
 
 def playCard(player):
     while True:
@@ -165,7 +167,11 @@ def main():
         
         for current_player in game.players:
             playedCards.append(drawBoard(game, current_player, playedCards))
-            
+            current_player.cartes.remove(playedCards[-1])
+            current_player.cartes.append(game.deck.pop(0))
+        
+        drawBoard(game, player, playedCards, final=True)
+        
         if game.deck:
             player = game.players[(game.players.index(player) + 1) % len(game.players)]
 
