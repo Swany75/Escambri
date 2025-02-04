@@ -1,28 +1,46 @@
-## Escambri
+# Escambri
 
 El joc de l'Escambri (Brisca) fet amb Python
 
+## Joc
+
+Tauler en Joc
 ```
 ╔══════════════════════════════════════════╗
-║ Triumph: Set de Oros                     ║
+║ Triumph: Cavall de Bastos                ║
 ╠═══════════════╦══════════════════╦═══════╣
 ║ Cartes en Joc ║                  ║ Valor ║
 ╠═══════════════╝                  ╠═══════╣
 ║                                  ║       ║
-║  1) Tres de Bastos               ║  10   ║
-║  2) Rei de Espases               ║  4    ║
-║  3) Sota de Copes                ║  2    ║
-║  4) Dos de Espases               ║  0    ║
+║  1) Dos de Copes                 ║  0    ║
+║  2) Set de Espases               ║  0    ║
+║  3) Tres de Espases              ║  10   ║
 ║                                  ║       ║
 ╠══════════════════════════════════╩═══════╣
-║ Torn Final                               ║
+║ Torn Diego                               ║
 ╠══════════════════════════════════╦═══════╣
 ║                                  ║       ║
-║  1) Set de Bastos                ║  0    ║
-║  2) Cavall de Bastos             ║  3    ║
-║  3) Tres de Copes                ║  10   ║
+║  1) Tres de Bastos               ║  10   ║
+║  2) Sota de Bastos               ║  2    ║
+║  3) Sis de Bastos                ║  0    ║
 ║                                  ║       ║
 ╚══════════════════════════════════╩═══════╝
 ```
 
-Exemple de tauler de joc
+Final de ronda
+```
+╔══════════════════════════════════════════╗
+║ Triumph: Cavall de Bastos                ║
+╠═══════════════╦══════════════════╦═══════╣
+║ Cartes en Joc ║                  ║ Valor ║
+╠═══════════════╝                  ╠═══════╣
+║                                  ║       ║
+║  1) Sota de Oros                 ║  2    ║
+║  2) As de Copes                  ║  11   ║
+║  3) Tres de Oros                 ║  10   ║
+║  4) As de Espases                ║  11   ║
+║                                  ║       ║
+╠══════════════════════════════════╩═══════╣
+║ Torn Final                               ║
+╚══════════════════════════════════════════╝
+```
