@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import os
 import random
@@ -7,6 +7,14 @@ import random
 
 FAMILIES = ['Oros', 'Bastos', 'Espases', 'Copes']
 CARTES = ['As', 'Dos', 'Tres', 'Quatre', 'Cinc', 'Sis', 'Set', 'Sota', 'Cavall', 'Rei']
+
+"""
+Ascii Art Template
+    ╔═╦═╗
+    ║ ║ ║
+    ╠═╬═╣
+    ╚═╩═╝ 
+"""
 
 ### CLASSES ###########################################################################################
 
@@ -23,6 +31,7 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.cartes = []
+        self.puntuacio = 0
     
     def addCard(self, carta):
         self.cartes.append(carta)
@@ -70,7 +79,7 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def pressToContinue():
-    input("Prem Enter per continuar...")
+    input("\nPulsa per continuar >>>")
 
 def setPlayers(joc):
     while True:
@@ -89,7 +98,7 @@ def setPlayers(joc):
     joc.reparteix()
 
 def player_score(player, players):
-    return -sum(carta.value for carta in player.cartes), players.index(player)
+    return -player.puntuacio, players.index(player)
 
 def generatePlayedCardsStr(playedCards):
     if playedCards:
@@ -97,8 +106,7 @@ def generatePlayedCardsStr(playedCards):
             f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║"
             for i, carta in enumerate(playedCards)
         )
-    else:
-        return "║                                  ║       ║"
+    return "║                                  ║       ║"
 
 def drawBoard(game, player, playedCards):
     clear()
@@ -114,7 +122,7 @@ def drawBoard(game, player, playedCards):
 {played_cards_str}
 ║                                  ║       ║
 ╠══════════════════════════════════╩═══════╣
-║ Torn {calcSpaces(f'Nom de {player.name}', 36)}║
+║ Torn {calcSpaces(f'de {player.name}', 36)}║
 ╠══════════════════════════════════╦═══════╣
 ║                                  ║       ║
 {chr(10).join(f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║" for i, carta in enumerate(player.cartes))}
@@ -128,15 +136,22 @@ def finalBoard(game, playedCards, player_cards):
     clear()
     played_cards_str = generatePlayedCardsStr(playedCards)
     
+    # Determinar el guanyador de la ronda
+    winning_card = roundWinner(playedCards)
+    winner = player_cards[winning_card]
+    
+    # Sumar els punts de les cartes jugades al guanyador
+    winner_points = sum(carta.value for carta in playedCards)
+    winner.puntuacio += winner_points
+    
     sorted_players = sorted(game.players, key=lambda p: player_score(p, game.players))
     players_str = "\n".join(
-        f"║  {calcSpaces(f'{i + 1}) {player.name}', 32)}║  {calcSpaces(str(sum(carta.value for carta in player.cartes)), 5)}║"
+        f"║  {calcSpaces(f'{i + 1}) {player.name}', 32)}║  {calcSpaces(str(player.puntuacio), 5)}║"
         for i, player in enumerate(sorted_players)
     )
     
-    winning_card = roundWinner(playedCards)
-    winner = player_cards[winning_card]
     print(f"El guanyador de la ronda és {winner.name} amb la carta {winning_card.carta} de {winning_card.family}")
+    print(f"Ha guanyat {winner_points} punts aquesta ronda.")
     
     print(f"""
 ╔══════════════════════════════════════════╗
@@ -164,8 +179,7 @@ def playCard(player):
             card = int(input("Tria una carta per jugar: "))
             if 1 <= card <= len(player.cartes):
                 break
-            else:
-                print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
+            print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
         except ValueError:
             print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
 
@@ -179,8 +193,7 @@ def calcSpaces(text, maxlen):
     
     if espais > 0:
         return text + " " * espais
-    else:
-        return text[:maxlen]
+    return text[:maxlen]
     
 def roundWinner(playedCards):    
     winning_card = playedCards[0]
@@ -189,11 +202,28 @@ def roundWinner(playedCards):
             winning_card = carta
     return winning_card
 
+def GameOver(guanyador):
+    f"""
+       ▄██████▄     ▄████████   ▄▄▄▄███▄▄▄▄      ▄████████       ▄██████▄   ▄█    █▄     ▄████████    ▄████████ 
+      ███    ███   ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
+      ███    █▀    ███    ███ ███   ███   ███   ███    █▀       ███    ███ ███    ███   ███    █▀    ███    ███ 
+     ▄███          ███    ███ ███   ███   ███  ▄███▄▄▄          ███    ███ ███    ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ 
+    ▀▀███ ████▄  ▀███████████ ███   ███   ███ ▀▀███▀▀▀          ███    ███ ███    ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   
+      ███    ███   ███    ███ ███   ███   ███   ███    █▄       ███    ███ ███    ███   ███    █▄  ▀███████████ 
+      ███    ███   ███    ███ ███   ███   ███   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
+      ████████▀    ███    █▀   ▀█   ███   █▀    ██████████       ▀██████▀   ▀██████▀    ██████████   ███    ███
+
+                        Enhorabona {guanyador} has guanyat amb {guanyador.punts} punts
+    """
+
 ### MAIN CODE #########################################################################################
 
 def main():
+    
     clear()
+    
     game = Escambri()
+    WINNER = None
     
     setPlayers(game)
     player = game.startPlayer()
@@ -221,6 +251,9 @@ def main():
         
         if game.deck:
             player = game.players[(game.players.index(player) + 1) % len(game.players)]
+
+    WINNER = max(game.players, key=lambda p: p.puntuacio)
+    GameOver(WINNER)
 
 if __name__ == "__main__":
     main()
