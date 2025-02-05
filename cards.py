@@ -74,6 +74,7 @@ class Escambri:
             for _ in range(3):
                 player.addCard(self.deck.pop(0))
         self.triumph = self.deck.pop(0)
+        self.deck.append(self.triumph)
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -203,7 +204,10 @@ def roundWinner(playedCards):
     return winning_card
 
 def GameOver(guanyador):
-    f"""
+    
+    clear()
+    
+    print(f"""
        ▄██████▄     ▄████████   ▄▄▄▄███▄▄▄▄      ▄████████       ▄██████▄   ▄█    █▄     ▄████████    ▄████████ 
       ███    ███   ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
       ███    █▀    ███    ███ ███   ███   ███   ███    █▀       ███    ███ ███    ███   ███    █▀    ███    ███ 
@@ -213,8 +217,13 @@ def GameOver(guanyador):
       ███    ███   ███    ███ ███   ███   ███   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
       ████████▀    ███    █▀   ▀█   ███   █▀    ██████████       ▀██████▀   ▀██████▀    ██████████   ███    ███
 
-                        Enhorabona {guanyador} has guanyat amb {guanyador.punts} punts
-    """
+                        Enhorabona {guanyador} has guanyat amb {guanyador.puntuacio} punts
+    """)
+
+    pressToContinue()
+
+def get_score(player):
+    return player.puntuacio
 
 ### MAIN CODE #########################################################################################
 
@@ -252,7 +261,7 @@ def main():
         if game.deck:
             player = game.players[(game.players.index(player) + 1) % len(game.players)]
 
-    WINNER = max(game.players, key=lambda p: p.puntuacio)
+    WINNER = max(game.players, key=get_score)
     GameOver(WINNER)
 
 if __name__ == "__main__":
