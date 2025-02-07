@@ -47,6 +47,7 @@ class Escambri:
         self.deck = []
         self.players = []
         self.triumph = None
+        self.order = []
         
     def createDeck(self):
         for familia in FAMILIES:
@@ -67,7 +68,9 @@ class Escambri:
         self.players.append(Player(name))
     
     def startPlayer(self):
-        return self.players[0]
+        start_id = random.randint(0, len(self.players) - 1)
+        self.order = ordre(start_id, len(self.players))
+        return self.players[start_id]
     
     def reparteix(self):
         for player in self.players:
@@ -81,6 +84,9 @@ def clear():
 
 def pressToContinue():
     input("\nPulsa per continuar >>>")
+
+def ordre(start_id, num_players):
+    return [(start_id + i) % num_players for i in range(num_players)]
 
 def setPlayers(joc):
     while True:
@@ -97,6 +103,7 @@ def setPlayers(joc):
 
     joc.createDeck()
     joc.reparteix()
+    joc.startPlayer()
 
 def player_score(player, players):
     return -player.puntuacio, players.index(player)
@@ -144,6 +151,8 @@ def finalBoard(game, playedCards, player_cards):
     # Sumar els punts de les cartes jugades al guanyador
     winner_points = sum(carta.value for carta in playedCards)
     winner.puntuacio += winner_points
+    
+    game.order = ordre(game.players.index(winner), len(game.players))
     
     sorted_players = sorted(game.players, key=lambda p: player_score(p, game.players))
     players_str = "\n".join(
@@ -217,10 +226,11 @@ def GameOver(guanyador):
       ███    ███   ███    ███ ███   ███   ███   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
       ████████▀    ███    █▀   ▀█   ███   █▀    ██████████       ▀██████▀   ▀██████▀    ██████████   ███    ███
 
-                        Enhorabona {guanyador} has guanyat amb {guanyador.puntuacio} punts
+                        Enhorabona {guanyador.name} has guanyat amb {guanyador.puntuacio} punts
     """)
 
     pressToContinue()
+    clear()
 
 def get_score(player):
     return player.puntuacio
@@ -228,38 +238,38 @@ def get_score(player):
 ### MAIN CODE #########################################################################################
 
 def main():
-    
     clear()
-    
     game = Escambri()
     WINNER = None
-    
+
     setPlayers(game)
     player = game.startPlayer()
-    
+
     clear()
-    
     print(f"Comença el jugador {player.name}")
     pressToContinue()
-    
+
     while any(player.cartes for player in game.players):
-        
         playedCards = []
         player_cards = {}
-        
-        for current_player in game.players:
+
+        for player_index in game.order:
+            current_player = game.players[player_index]
+            
             if current_player.cartes:
                 played_card = drawBoard(game, current_player, playedCards)
                 playedCards.append(played_card)
                 player_cards[played_card] = current_player
                 current_player.cartes.remove(played_card)
+            
                 if game.deck:
                     current_player.cartes.append(game.deck.pop(0))
-        
+
         finalBoard(game, playedCards, player_cards)
-        
+
         if game.deck:
-            player = game.players[(game.players.index(player) + 1) % len(game.players)]
+            player = max(player_cards.values(), key=get_score)
+            game.order = ordre(game.players.index(player), len(game.players))
 
     WINNER = max(game.players, key=get_score)
     GameOver(WINNER)
