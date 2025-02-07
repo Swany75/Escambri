@@ -104,7 +104,7 @@ def setPlayers(joc):
     joc.createDeck()
     joc.reparteix()
     joc.startPlayer()
-
+    
 def player_score(player, players):
     return -player.puntuacio, players.index(player)
 
@@ -145,7 +145,7 @@ def finalBoard(game, playedCards, player_cards):
     played_cards_str = generatePlayedCardsStr(playedCards)
     
     # Determinar el guanyador de la ronda
-    winning_card = roundWinner(playedCards)
+    winning_card = roundWinner(playedCards, game)
     winner = player_cards[winning_card]
     
     # Sumar els punts de les cartes jugades al guanyador
@@ -205,11 +205,22 @@ def calcSpaces(text, maxlen):
         return text + " " * espais
     return text[:maxlen]
     
-def roundWinner(playedCards):    
+def roundWinner(playedCards, game):    
+    
     winning_card = playedCards[0]
+    winning_value = winning_card.value
+    
     for carta in playedCards:
-        if carta.value > winning_card.value:
+        
+        adjusted_value = carta.value
+        
+        if carta.family == game.triumph.family:
+            adjusted_value *= 3
+            
+        if adjusted_value > winning_value:
             winning_card = carta
+            winning_value = adjusted_value
+            
     return winning_card
 
 def GameOver(guanyador):
