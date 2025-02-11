@@ -8,14 +8,6 @@ import random
 FAMILIES = ['Oros', 'Bastos', 'Espases', 'Copes']
 CARTES = ['As', 'Dos', 'Tres', 'Quatre', 'Cinc', 'Sis', 'Set', 'Sota', 'Cavall', 'Rei']
 
-"""
-Ascii Art Template
-    ╔═╦═╗
-    ║ ║ ║
-    ╠═╬═╣
-    ╚═╩═╝ 
-"""
-
 ### CLASSES ###########################################################################################
 
 class Carta:
@@ -89,6 +81,16 @@ def ordre(start_id, num_players):
     return [(start_id + i) % num_players for i in range(num_players)]
 
 def setPlayers(joc):
+    
+    print("""
+███████╗███████╗ ██████╗ █████╗ ███╗   ███╗██████╗ ██████╗ ██╗
+██╔════╝██╔════╝██╔════╝██╔══██╗████╗ ████║██╔══██╗██╔══██╗██║
+█████╗  ███████╗██║     ███████║██╔████╔██║██████╔╝██████╔╝██║
+██╔══╝  ╚════██║██║     ██╔══██║██║╚██╔╝██║██╔══██╗██╔══██╗██║
+███████╗███████║╚██████╗██║  ██║██║ ╚═╝ ██║██████╔╝██║  ██║██║
+╚══════╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝
+          """)
+    
     while True:
         try:
             num_players = int(input("Introdueix el nombre de jugadors (2..4): "))
