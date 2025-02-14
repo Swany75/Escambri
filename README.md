@@ -113,3 +113,7 @@ Ha guanyat 15 punts aquesta ronda.
 
 Final de la ronda
 ```
+
+## Recursos emprats
+
+[Text to Ascii Art](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)

@@ -93,15 +93,22 @@ def setPlayers(joc):
     
     while True:
         try:
-            num_players = int(input("Introdueix el nombre de jugadors (2..4): "))
-            if 2 <= num_players <= 4:
+            num_players = int(input("Introdueix el nombre de jugadors (0..4): "))
+            if 0 <= num_players <= 4:
                 for i in range(1, num_players + 1):
-                    name = input(f"Jugador {i} escriu el teu nom: ")
-                    joc.addPlayer(name)
+                    while True:
+                        name = input(f"Jugador {i} escriu el teu nom: ")
+                        if name.strip():
+                            joc.addPlayer(name)
+                            break
+                        else:
+                            print("El nom del jugador no pot estar buit")
+                for i in range(num_players + 1, 5):
+                    joc.addPlayer(f"Bot {i - num_players}")
                 break
-            print("Error: Introdueix un numero valid (2..4)") 
+            print("Error: Introdueix un numero valid (0..4)") 
         except ValueError:
-            print("Error: Introdueix un numero valid (2..4)")
+            print("Error: Introdueix un numero valid (0..4)")
 
     joc.createDeck()
     joc.reparteix()
@@ -185,19 +192,38 @@ def finalBoard(game, playedCards, player_cards):
     print("Final de la ronda")
     pressToContinue()
 
-def playCard(player):
-    while True:
-        try:
-            card = int(input("Tria una carta per jugar: "))
-            if 1 <= card <= len(player.cartes):
-                break
-            print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
-        except ValueError:
-            print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
+def botPlayCard(player):
 
-    print(f"Has jugat {player.cartes[card - 1]}")
+    played_card = player.cartes[0]
+    
+    for card in player.cartes:
+        if card.value > played_card.value:
+            played_card = card
+    
+    # Descomenta les següents línies per veure les cartes que juga el bot (en principi no ho volem veure)
+    print(f"{player.name} ha jugat {played_card}")
     pressToContinue()
-    return player.cartes[card - 1]
+    
+    return played_card
+
+def playCard(player):
+    
+    if "Bot" in player.name or len(player.cartes) == 1:
+        return botPlayCard(player)
+    
+    else:
+        while True:
+            try:
+                card = int(input("Tria una carta per jugar: "))
+                if 1 <= card <= len(player.cartes):
+                    break
+                print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
+            except ValueError:
+                print(f"Error: Introdueix un numero valid (1..{len(player.cartes)})")
+
+        print(f"Has jugat {player.cartes[card - 1]}")
+        pressToContinue()
+        return player.cartes[card - 1]
 
 def calcSpaces(text, maxlen):
     lenText = len(text)
@@ -239,7 +265,7 @@ def GameOver(guanyador):
       ███    ███   ███    ███ ███   ███   ███   ███    ███      ███    ███ ███    ███   ███    ███   ███    ███ 
       ████████▀    ███    █▀   ▀█   ███   █▀    ██████████       ▀██████▀   ▀██████▀    ██████████   ███    ███
 
-                        Enhorabona {guanyador.name} has guanyat amb {guanyador.puntuacio} punts
+                                  Enhorabona {guanyador.name} has guanyat amb {guanyador.puntuacio} punts
     """)
 
     pressToContinue()
@@ -251,6 +277,7 @@ def get_score(player):
 ### MAIN CODE #########################################################################################
 
 def main():
+    
     clear()
     game = Escambri()
     WINNER = None
@@ -281,7 +308,7 @@ def main():
         finalBoard(game, playedCards, player_cards)
 
         if game.deck:
-            player = max(player_cards.values(), key=get_score)
+            player = player_cards[roundWinner(playedCards, game)]
             game.order = ordre(game.players.index(player), len(game.players))
 
     WINNER = max(game.players, key=get_score)
