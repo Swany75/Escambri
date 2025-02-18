@@ -2,6 +2,7 @@
 
 import os
 import random
+from colorama import Fore, Style
 
 ### CONSTANTS & VARIABLES #############################################################################
 
@@ -15,9 +16,20 @@ class Carta:
         self.family = family
         self.carta = carta
         self.value = value
+    
+    def get_color(self):
+        # Assigna un color segons la família de la carta.
+        colors = {
+            'Oros': Fore.YELLOW,
+            'Bastos': Fore.GREEN,
+            'Espases': Fore.BLUE,
+            'Copes': Fore.RED
+        }
+        return colors.get(self.family, Fore.WHITE)  # Color per defecte: blanc
         
     def __str__(self):
         return f"{self.carta} de {self.family} que te un Valor de: {self.value}"
+
 
 class Player:
     def __init__(self, name):
@@ -71,11 +83,16 @@ class Escambri:
         self.triumph = self.deck.pop(0)
         self.deck.append(self.triumph)
 
+
+### FUNCIONS GENERALS #################################################################################
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def pressToContinue():
     input("\nPulsa per continuar >>>")
+
+### FUNCIONS DEL JOC ##################################################################################
 
 def ordre(start_id, num_players):
     return [(start_id + i) % num_players for i in range(num_players)]
@@ -131,7 +148,7 @@ def drawBoard(game, player, playedCards):
     
     print(f"""
 ╔══════════════════════════════════════════╗
-║ Triumph: {calcSpaces(str(f"{game.triumph.carta} de {game.triumph.family}"), 32)}║
+║ Triumph: {calcSpaces(str(f"{game.triumph.get_color()}{game.triumph.carta} de {game.triumph.family}{Style.RESET_ALL}"), 41)}║
 ╠═══════════════╦══════════════════╦═══════╣
 ║ Cartes en Joc ║                  ║ Valor ║
 ╠═══════════════╝                  ╠═══════╣
@@ -292,6 +309,15 @@ def main():
     while any(player.cartes for player in game.players):
         playedCards = []
         player_cards = {}
+        
+        # Comprovar si queda només una carta a la mà de cada jugador
+        if all(len(player.cartes) == 1 for player in game.players):
+            for player in game.players:
+                played_card = player.cartes.pop(0)
+                playedCards.append(played_card)
+                player_cards[played_card] = player
+            finalBoard(game, playedCards, player_cards)
+            break
 
         for player_index in game.order:
             current_player = game.players[player_index]
