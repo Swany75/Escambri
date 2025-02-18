@@ -8,7 +8,7 @@ El joc de l'Escambri (Brisca) fet amb Python. Aixo es un projecte fet per el mò
 
 Per jugar a l'Escambri, cal instal·lar les dependències necessàries. Pots fer-ho amb:
 
-```sh
+```python
 pip install -r requirements.txt
 ```
 # Regles de l'Escambri

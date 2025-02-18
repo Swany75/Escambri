@@ -151,7 +151,7 @@ def player_score(player, players):
 def generatePlayedCardsStr(playedCards):
     if playedCards:
         return "\n".join(
-            f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║"
+            f"║  {calcSpaces(f'{i + 1}) {carta.get_color()}{carta.carta} de {carta.family}{Style.RESET_ALL}', 41)}║  {calcSpaces(str(carta.value), 5)}║"
             for i, carta in enumerate(playedCards)
         )
     return "║                                  ║       ║"
@@ -173,7 +173,7 @@ def drawBoard(game, player, playedCards):
 ║ Torn {calcSpaces(f'de {player.name}', 36)}║
 ╠══════════════════════════════════╦═══════╣
 ║                                  ║       ║
-{chr(10).join(f"║  {calcSpaces(f'{i + 1}) {carta.carta} de {carta.family}', 32)}║  {calcSpaces(str(carta.value), 5)}║" for i, carta in enumerate(player.cartes))}
+{chr(10).join(f"║  {calcSpaces(f'{i + 1}) {carta.get_color()}{carta.carta} de {carta.family}{Style.RESET_ALL}', 41)}║  {calcSpaces(str(carta.value), 5)}║" for i, carta in enumerate(player.cartes))}
 ║                                  ║       ║
 ╚══════════════════════════════════╩═══════╝
 """)
@@ -205,7 +205,7 @@ def finalBoard(game, playedCards, player_cards):
     
     print(f"""
 ╔══════════════════════════════════════════╗
-║ Triumph: {calcSpaces(str(f"{game.triumph.carta} de {game.triumph.family}"), 32)}║
+║ Triumph: {calcSpaces(str(f"{game.triumph.get_color()}{game.triumph.carta} de {game.triumph.family}{Style.RESET_ALL}"), 41)}║
 ╠═══════════════╦══════════════════╦═══════╣
 ║ Cartes en Joc ║                  ║ Valor ║
 ╠═══════════════╝                  ╠═══════╣
