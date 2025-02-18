@@ -4,6 +4,14 @@ import os
 import random
 from colorama import Fore, Style
 
+""" 
+Ascii Art template
+╔═╦═╗
+║ ║ ║
+╠═╬═╣
+╚═╩═╝
+"""
+
 ### CONSTANTS & VARIABLES #############################################################################
 
 FAMILIES = ['Oros', 'Bastos', 'Espases', 'Copes']
@@ -92,12 +100,9 @@ def clear():
 def pressToContinue():
     input("\nPulsa per continuar >>>")
 
-### FUNCIONS DEL JOC ##################################################################################
+### FUNCIONS ASCII ART ################################################################################
 
-def ordre(start_id, num_players):
-    return [(start_id + i) % num_players for i in range(num_players)]
-
-def setPlayers(joc):
+def printTitle():
     
     print("""
 ███████╗███████╗ ██████╗ █████╗ ███╗   ███╗██████╗ ██████╗ ██╗
@@ -106,7 +111,16 @@ def setPlayers(joc):
 ██╔══╝  ╚════██║██║     ██╔══██║██║╚██╔╝██║██╔══██╗██╔══██╗██║
 ███████╗███████║╚██████╗██║  ██║██║ ╚═╝ ██║██████╔╝██║  ██║██║
 ╚══════╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝
-          """)
+    """)
+
+### FUNCIONS DEL JOC ##################################################################################
+
+def ordre(start_id, num_players):
+    return [(start_id + i) % num_players for i in range(num_players)]
+
+def setPlayers(joc):
+    
+    printTitle()
     
     while True:
         try:
@@ -217,7 +231,6 @@ def botPlayCard(player):
         if card.value > played_card.value:
             played_card = card
     
-    # Descomenta les següents línies per veure les cartes que juga el bot (en principi no ho volem veure)
     print(f"{player.name} ha jugat {played_card}")
     pressToContinue()
     
